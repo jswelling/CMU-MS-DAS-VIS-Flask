@@ -1,0 +1,18 @@
+.idea
+.vs
+.vscode
+*.pyc
+db.sqlite3
+*~
+__pycache__
+media/*
+media
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.log*
