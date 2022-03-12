@@ -8,7 +8,8 @@ These instructions assume conda is already installed.
 To set things up:
 1) Clone this repo to your local machine.
 2) cd into the repo you've just cloned.
-3) On Linux or macOS do:
+3) Create the virtual environment, as follows:
+On Linux or macOS do:
 ```
 $ conda create --name FlaskEnv python=3.8
 $ conda activate FlaskEnv
@@ -20,3 +21,14 @@ On Windows do:
 > activate FlaskEnv
 > py -m pip install -r requirements.txt
 ```
+4) Start up the server:
+On Linux or macOS do:
+```
+$ bash init_db.sh
+$ bash run_app.sh
+```
+(Windows instructions pending...)
+5) The Flask server should now be running in the window where you issued
+   the run-app command.  Connect to the server from a web browser. The
+   URL should be visible in the window, but it is probably
+   http://127.0.0.1:5000/
