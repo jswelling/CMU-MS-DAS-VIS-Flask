@@ -27,7 +27,10 @@ On Linux or macOS do:
 $ bash init_db.sh
 $ bash run_app.sh
 ```
+On Windows do:
+```
 (Windows instructions pending...)
+```
 5) The Flask server should now be running in the window where you issued
    the run-app command.  Connect to the server from a web browser. The
    URL should be visible in the window, but it is probably
