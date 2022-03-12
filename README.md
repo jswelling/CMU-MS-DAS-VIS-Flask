@@ -3,12 +3,20 @@ CMU MS-DAS Visualization Class course Flask lab
 
 ## Quick Start ##
 
-This class uses a lot of different tools, and they do not all work well together.  Thus several different requirements.txt files are
-provided.  To set up a generic Python environment for the class using conda, do:
+This repo is meant to provide a simple Flask environment for class experiments.
+These instructions assume conda is already installed.
+To set things up:
+1) Clone this repo to your local machine.
+2) cd into the repo you've just cloned.
+3) On Linux or macOS do:
 ```
-$ conda create --name VisClassEnv python=3.8
-$ conda activate VisClassEnv
-$ pip install -r https://raw.githubusercontent.com/jswelling/CMU-MS-DAS-Vis-S22/main/requirements_generic.txt
-$ python -m ipykernel install --user --name VisClassEnv --display-name "Python (VisClassEnv)"
+$ conda create --name FlaskEnv python=3.8
+$ conda activate FlaskEnv
+$ pip install -r requirements.txt
 ```
-Any specific example from the class may require a different environment, but they are installed from their requirements.txt files in the same way.
+On Windows do:
+```
+> conda create -n FlaskEnv python=3.8 anaconda
+> activate FlaskEnv
+> py -m pip install -r requirements.txt
+```
