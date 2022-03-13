@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}This Is My Header{% endblock %}</h1>
+{#
+  {% if g.user %}
+  <a class="action" href="{{ url_for('blog.create') }}">New</a>
+  {% endif %}
+  #}
+{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for word in things %}
+    <li>{{word}}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+      
