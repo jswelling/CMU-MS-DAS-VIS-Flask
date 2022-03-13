@@ -2,17 +2,12 @@
 
 {% block header %}
 <h1>{% block title %}Things To See{% endblock %}</h1>
+<a class="action" href="{{ url_for('main.index') }}">index</a>
 <a class="action" href="{{ url_for('main.matplotlib') }}">matplotlib</a>
 <a class="action" href="{{ url_for('main.d3') }}">D3</a>
-<a class="action" href="{{ url_for('main.graphviz') }}">graphviz</a>
 {% endblock %}
 
   {% block content %}
-  <h1>Here are the things on the list</h1>
-  <ul>
-    {% for word in things %}
-    <li>{{word}}</li>
-    {% endfor %}
-  </ul>
+<h1>GraphViz Example</h1>
+<h3>This Page Intentionally Left Blank (for now)</h3>
 {% endblock %}
-      

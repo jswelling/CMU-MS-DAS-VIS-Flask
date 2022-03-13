@@ -17,3 +17,18 @@ def index():
     #     ' ORDER BY created DESC'
     # ).fetchall()
     return render_template('main/index.html', things=["foo","bar","baz"])
+
+@bp.route('/matplotlib_demo')
+def matplotlib():
+    db = get_db()
+    return render_template('main/matplotlib_demo.html')
+
+@bp.route('/d3_demo')
+def d3():
+    db = get_db()
+    return render_template('main/d3_demo.html')
+
+@bp.route('/graphviz_demo')
+def graphviz():
+    db = get_db()
+    return render_template('main/graphviz_demo.html')
