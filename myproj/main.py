@@ -1,8 +1,7 @@
 import io
 from pprint import pprint
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_svg import FigureCanvasSVG
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_svg import FigureCanvasSVG
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
@@ -44,13 +43,19 @@ def draw_matplotlib_figure(fig, axes, data):
     if 'log_cbox' in data and data['log_cbox']:
         axes.set_yscale('log')
 
+    if 'text' in data and data['text'] != '':
+        axes.set_title(data['text'])
+
 @bp.route('/matplotlib_form_submit', methods=['POST'])
 def matplotlib_form_submit():
     data = request.get_json()
     print('Request data follows:')
     pprint(data)
     image_holder = io.StringIO()
-    fig, axes = plt.subplots()
+    # Note that we have to avoid saying 'plt.subplots' because
+    # matplotlib.pyplot is not thread-safe. This works, though.
+    fig = Figure()
+    axes = fig.subplots()
     draw_matplotlib_figure(fig, axes, data)
     FigureCanvasSVG(fig).print_svg(image_holder)
     return {
