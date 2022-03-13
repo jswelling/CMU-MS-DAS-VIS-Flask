@@ -1,3 +1,9 @@
+import io
+from pprint import pprint
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_svg import FigureCanvasSVG
+from matplotlib.figure import Figure
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -22,6 +28,36 @@ def index():
 def matplotlib():
     db = get_db()
     return render_template('main/matplotlib_demo.html')
+
+def draw_matplotlib_figure(fig, axes, data):
+    axes.plot([0.0, 1.0, 2.0, 3.0], [0.0, 1.0, 4.0, 9.0])
+
+    if 'axes_cbox' in data and not data['axes_cbox']:
+        # Hide the right and top spines
+        axes.spines['right'].set_visible(False)
+        axes.spines['top'].set_visible(False)
+
+        # Only show ticks on the left and bottom spines
+        axes.yaxis.set_ticks_position('left')
+        axes.xaxis.set_ticks_position('bottom')
+        
+    if 'log_cbox' in data and data['log_cbox']:
+        axes.set_yscale('log')
+
+@bp.route('/matplotlib_form_submit', methods=['POST'])
+def matplotlib_form_submit():
+    data = request.get_json()
+    print('Request data follows:')
+    pprint(data)
+    image_holder = io.StringIO()
+    fig, axes = plt.subplots()
+    draw_matplotlib_figure(fig, axes, data)
+    FigureCanvasSVG(fig).print_svg(image_holder)
+    return {
+        #"message":"the ajax exchange happened!",
+        "image":image_holder.getvalue()
+    }
+    
 
 @bp.route('/d3_demo')
 def d3():

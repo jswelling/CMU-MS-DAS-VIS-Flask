@@ -7,7 +7,56 @@
 <a class="action" href="{{ url_for('main.graphviz') }}">graphviz</a>
 {% endblock %}
 
-  {% block content %}
+{% block content %}
+<script>
+  $(function(){ // This is a "document ready" wrapper- it will happen last
+      $( "#matplotlib_form" ).submit(
+	function(event) {
+	  event.preventDefault(); // prevent clearing form on submit
+	  data = {text: $("#form_text").val(),
+		  selector: $("#form_select").val(),
+		  axes_cbox: $("#form_cbox_axes").is(":checked"),
+		  log_cbox: $("#form_cbox_log").is(":checked")
+		 };
+	  $.ajax({type:'POST',
+		  url:'matplotlib_form_submit',
+		  data:JSON.stringify(data),
+		  contentType: "application/json; charset=utf-8",
+		  dataType: "json"
+		 })
+	    .done( function(returned_data) {
+	      if (returned_data["message"] !== undefined) {
+		alert(returned_data["message"]);
+	      }
+	      $("#image_area").html(returned_data["image"])
+	    })
+	    .fail(function(jqxhr, textStatus, error) {
+	      $("#spinner_div").removeClass("show-spinner");
+	      alert('Error: '+jqxhr.responseText);
+	    });
+	}
+      );
+  });
+</script>
 <h1>Matplotlib Example</h1>
-<h3>This Page Intentionally Left Blank (for now)</h3>
+<form id="matplotlib_form">
+  <label for="form_text">A text string: </label>
+  <input name="form_text" id="form_text" type="text">
+  <label for="form_select">A selector: </label>
+  <select name="form_select" id="form_select">
+    <option value="something">Something</option>
+    <option value="another">Another</option>
+    <option value="thirdoption">Third Option</option>
+  </select>
+  <label for="form_cbox_axis">Show Axes:</label>
+  <input type="checkbox" id="form_cbox_axes" name="form_cbox_axis">
+  <label for="form_cbox_log">Log Scale:</label>
+  <input type="checkbox" id="form_cbox_log" name="form_cbox_log">
+  </input>
+  
+  <input type="submit">
+</form>
+<div id="image_area">
+</div>
+  
 {% endblock %}
