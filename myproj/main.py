@@ -1,4 +1,5 @@
 import io
+import subprocess
 from pprint import pprint
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_svg import FigureCanvasSVG
@@ -72,4 +73,31 @@ def d3():
 @bp.route('/graphviz_demo')
 def graphviz():
     db = get_db()
-    return render_template('main/graphviz_demo.html')
+    return render_template(
+        'main/graphviz_demo.html',
+        layout_engines=['dot', 'neato', 'twopi', 'circo',
+                        'ftp', 'osage', 'patchwork', 'sfdp'
+                        ]
+    )
+
+@bp.route('/graphviz_form_submit', methods=['POST'])
+def graphviz_form_submit():
+    data = request.get_json()
+    print('in graphviz')
+    print('Request data follows:')
+    pprint(data)
+    rslt = subprocess.run([data['selector'], '-Tsvg'],
+                          input=data['textarea'].encode(),
+                          capture_output=True)
+    pprint(rslt)
+    if rslt.returncode:
+        return {
+            "message": f"An error occurred: {rslt.stderr.decode()}"
+            }
+    else:
+        return {
+            "message":"the ajax exchange happened!",
+            "image":rslt.stdout.decode()
+        }
+    
+
