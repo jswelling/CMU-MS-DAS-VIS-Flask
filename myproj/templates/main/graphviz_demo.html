@@ -15,9 +15,8 @@
 	  event.preventDefault(); // prevent clearing form on submit
 	  data = {textarea: $("#form_textarea").val(),
 		  selector: $("#form_select").val(),
-		  axes_cbox: $("#form_cbox_axes").is(":checked"),
-		  log_cbox: $("#form_cbox_log").is(":checked")
-		 };
+		  out_format: $('input[name="out_type"]:checked').val()
+  		 };
 	  $.ajax({type:'POST',
 		  url:'graphviz_form_submit',
 		  data:JSON.stringify(data),
@@ -49,11 +48,41 @@
     <option value="{{l_e}}">{{l_e}}</option>
     {% endfor %}
   </select>
-  <label for="form_cbox_axis">Show Axes:</label>
-  <input type="checkbox" id="form_cbox_axes" name="form_cbox_axis">
-  <label for="form_cbox_log">Log Scale:</label>
-  <input type="checkbox" id="form_cbox_log" name="form_cbox_log">
-  </input>
+  <table>
+    <tr>
+      <td>
+	<input type="radio" id="out_svg" name="out_type" value="svg"
+	       checked="checked">
+      </td>
+      <td>
+	<label for="out_svg">output SVG</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<input type="radio" id="out_dot" name="out_type" value="dot">
+      </td>
+      <td>
+	<label for="out_dot">output DOT with coordinates</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<input type="radio" id="out_xdot" name="out_type" value="xdot">
+      </td>
+      <td>
+	<label for="out_xdot">output DOT with extended coordinates</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<input type="radio" id="out_nolayout" name="out_type" value="nolayout">
+      </td>
+      <td>
+	<label for="out_xdot">render to SVG only (do no layout)</label>
+      </td>
+    </tr>
+  </table>
   
   <input type="submit">
 </form>

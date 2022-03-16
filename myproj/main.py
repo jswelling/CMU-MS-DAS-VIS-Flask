@@ -76,7 +76,7 @@ def graphviz():
     return render_template(
         'main/graphviz_demo.html',
         layout_engines=['dot', 'neato', 'twopi', 'circo',
-                        'ftp', 'osage', 'patchwork', 'sfdp'
+                        'fdp', 'osage', 'patchwork', 'sfdp'
                         ]
     )
 
@@ -86,7 +86,12 @@ def graphviz_form_submit():
     print('in graphviz')
     print('Request data follows:')
     pprint(data)
-    rslt = subprocess.run([data['selector'], '-Tsvg'],
+    if data['out_format'] == 'nolayout':
+        # Special case- avoid layout step
+        cmd_l = ['neato', '-n2', '-Tsvg']
+    else:
+        cmd_l = [data['selector'], f"-T{data['out_format']}"]
+    rslt = subprocess.run(cmd_l,
                           input=data['textarea'].encode(),
                           capture_output=True)
     pprint(rslt)
@@ -96,7 +101,7 @@ def graphviz_form_submit():
             }
     else:
         return {
-            "message":"the ajax exchange happened!",
+            #"message":"the ajax exchange happened!",
             "image":rslt.stdout.decode()
         }
     
