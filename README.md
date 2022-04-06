@@ -19,7 +19,7 @@ On Windows do:
 ```
 > conda create -n FlaskEnv python=3.8 anaconda
 > activate FlaskEnv
-> py -m pip install -r requirements.txt
+> pip install -r requirements.txt
 ```
 4) Start up the server:
 On Linux or macOS do:
@@ -29,7 +29,10 @@ $ bash run_app.sh
 ```
 On Windows do:
 ```
-(Windows instructions pending...)
+>set FLASK_APP=myproj
+>set FLASK_DEV=development
+>flask init-db
+>flask run
 ```
 5) The Flask server should now be running in the window where you issued
    the run-app command.  Connect to the server from a web browser. The
