@@ -17,9 +17,9 @@ $ pip install -r requirements.txt
 ```
 On Windows do:
 ```
-> conda create -n FlaskEnv python=3.8 anaconda
-> activate FlaskEnv
-> pip install -r requirements.txt
+>conda create -n FlaskEnv python=3.8 anaconda
+>activate FlaskEnv
+>pip install -r requirements.txt
 ```
 4) Start up the server:
 On Linux or macOS do:
