@@ -8,6 +8,59 @@
 {% endblock %}
 
   {% block content %}
+<script>
+  $(function(){ // This is a "document ready" wrapper- it will happen last
+      $( "#d3_form" ).submit(
+	function(event) {
+	  event.preventDefault(); // prevent clearing form on submit
+	  data = {
+	    textarea: $("#form_textarea").val()
+  	  };
+	  $.ajax({type:'POST',
+		  url:'d3_form_submit',
+		  data:JSON.stringify(data),
+		  contentType: "application/json; charset=utf-8",
+		  dataType: "json"
+		 })
+	    .done( function(returned_data) {
+	      if (returned_data["message"] !== undefined) {
+		alert(returned_data["message"]);
+	      }
+	      $("#d3_treemap_area").html(returned_data["image"])
+	    })
+	    .fail(function(jqxhr, textStatus, error) {
+	      $("#spinner_div").removeClass("show-spinner");
+	      alert('Error: '+jqxhr.responseText);
+	    });
+	}
+      );
+  });
+</script>
 <h1>D3 Example</h1>
-<h3>This Page Intentionally Left Blank (for now)</h3>
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <label>
+	Hierarchy
+	<input id="inHierarchy" value="Dpto" class="form-control"/>
+      </label>
+      <button id="btnSubmit" class="btn btn-primary">Submit</button>
+    </div>
+
+    <form id="d3_form">
+      <label for="form_textfield">Stuff to pass to D3 Treemap: </label>
+      <textarea id="form_textarea" name="form_textarea" rows=4 columns=50>
+      </textarea>
+      <table>
+	<th>Notes</th>
+	<tr><td>I remove the spinner class but never add it?</td></tr>
+      </table>
+      <input type="submit">
+    </form>
+    
+    
+    <div class="col-8" id="d3_treemap_area">
+    </div>
+  </div>
+</div>
 {% endblock %}
