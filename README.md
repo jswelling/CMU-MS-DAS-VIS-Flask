@@ -31,7 +31,7 @@ $ bash run_app.sh
 On Windows do:
 ```
 >set FLASK_APP=myproj
->set FLASK_DEV=development
+>set FLASK_ENV=development
 >flask init-db
 >flask run
 ```
