@@ -10,6 +10,10 @@
   {% block content %}
 <script>
   $(function(){ // This is a "document ready" wrapper- it will happen last
+      var margin = {top:30, bottom: 40, left: 50, right:60},
+	  width = 1000 - (margin.left + margin.right),
+	  height = 1000 - (margin.top + margin.bottom);
+    
       $( "#d3_form" ).submit(
 	function(event) {
 	  event.preventDefault(); // prevent clearing form on submit
@@ -23,10 +27,74 @@
 		  dataType: "json"
 		 })
 	    .done( function(returned_data) {
+	      // display any message
 	      if (returned_data["message"] !== undefined) {
 		alert(returned_data["message"]);
 	      }
-	      $("#d3_treemap_area").html(returned_data["image"])
+
+	      // delete the contents of d3_display_area and replace
+	      // with a fresh svg group with the right dimensions
+	      $("#d3_display_area").empty() // get rid of any old contents
+	      var this_svg = d3.select("#d3_display_area").append("svg")
+		  .attr("width", width+margin.left+margin.right)
+		  .attr("height", height+margin.top + margin.bottom)
+		  .append("g")
+		  .attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
+	      
+	      // Generate a hierarchical layout.  The 'sum' function runs
+	      // down through the hierarchy, summing the 'key' value for
+	      // each node.  Nothing gets drawn yet, and the graphical
+	      // element 'this_svg' is still empty.
+	      var key = returned_data['key']
+	      var root = d3.hierarchy(returned_data['data']).sum(
+		function(d){ return d[key] }
+	      )
+
+	      // The d3.treemap takes the hierarchy info and generates
+	      // information for all the nested rectangles of the treemap.
+	      // After this call, each node of the hierarchy has associated
+	      // size and placement info.  That info still needs to be
+	      // converted to SVG graphical elements however.
+	      d3.treemap().size([width, height]).padding(2)(root)	      
+
+	      console.log(this_svg.selectAll("rect"))
+
+	      // This process is tricky.  There is no 'rect' initially
+	      // in 'this_svg'.  As the loop passes through
+	      // all the leaves of the hierarchy, it creates a corresponding
+	      // SVG 'rect' with the correct size and location.  Because
+	      // this all happens in traversal order for the original
+	      // graph, everything ends up in the right place.
+	      this_svg
+		.selectAll("rect")
+		.data(root.leaves())
+		.enter()
+		.append("rect")
+		.attr('x', function (d) { return d.x0; })
+		.attr('y', function (d) { return d.y0; })
+		.attr('width', function (d) { return d.x1 - d.x0; })
+		.attr('height', function (d) { return d.y1 - d.y0; })
+		.style("stroke", "black")
+		.style("fill", "slateblue")
+	      
+	      console.log(this_svg.selectAll("rect"))
+
+	      // Repeat the same trick, creating text elements for all
+	      // the labels.  The +5 and +20 are to adjust the position
+	      // of the text to the right and downward so that it doesn't
+	      // land on top of the upper right corner of the associated
+	      // 'rect'.
+	      this_svg
+		.selectAll("text")
+		.data(root.leaves())
+		.enter()
+		.append("text")
+		.attr("x", function(d){ return d.x0+5})
+		.attr("y", function(d){ return d.y0+20})
+		.text(function(d){ return d.data.name })
+		.attr("font-size", "15px")
+		.attr("fill", "white")
 	    })
 	    .fail(function(jqxhr, textStatus, error) {
 	      $("#spinner_div").removeClass("show-spinner");
@@ -39,27 +107,24 @@
 <h1>D3 Example</h1>
 <div class="container">
   <div class="row">
-    <div class="col-4">
-      <label>
-	Hierarchy
-	<input id="inHierarchy" value="Dpto" class="form-control"/>
-      </label>
-      <button id="btnSubmit" class="btn btn-primary">Submit</button>
-    </div>
 
+    <table>
+      <th>Notes</th>
+      <tr><td>I remove the spinner class but never add it?</td></tr>
+    </table>
     <form id="d3_form">
       <label for="form_textfield">Stuff to pass to D3 Treemap: </label>
       <textarea id="form_textarea" name="form_textarea" rows=4 columns=50>
       </textarea>
-      <table>
-	<th>Notes</th>
-	<tr><td>I remove the spinner class but never add it?</td></tr>
-      </table>
+      <label>
+	Hierarchy
+	<input id="inHierarchy" value="Dpto" class="form-control"/>
+      </label>
       <input type="submit">
     </form>
     
     
-    <div class="col-8" id="d3_treemap_area">
+    <div class="col-8" id="d3_display_area">
     </div>
   </div>
 </div>
