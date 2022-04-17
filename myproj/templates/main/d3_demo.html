@@ -18,7 +18,7 @@
 	function(event) {
 	  event.preventDefault(); // prevent clearing form on submit
 	  data = {
-	    textarea: $("#form_textarea").val()
+	    selector: $("#form_select").val()
   	  };
 	  $.ajax({type:'POST',
 		  url:'d3_form_submit',
@@ -47,9 +47,19 @@
 	      // each node.  Nothing gets drawn yet, and the graphical
 	      // element 'this_svg' is still empty.
 	      var key = returned_data['key']
-	      var root = d3.hierarchy(returned_data['data']).sum(
-		function(d){ return d[key] }
-	      )
+	      var root;
+	      if (returned_data['format'] == 'json') {
+		root = d3.hierarchy(returned_data['data']).sum(
+		  function(d){ return d[key] }
+		)
+	      } else { // presumably 'csv'
+		root = d3.stratify()
+		  .id(function(d){ return d['name'] })
+		  .parentId(function(d){ return d['parent'] })
+		(returned_data['data'])
+		  .sum( function(d){ return d[key] })
+		console.log(root)
+	      }
 
 	      // The d3.treemap takes the hierarchy info and generates
 	      // information for all the nested rectangles of the treemap.
@@ -57,8 +67,6 @@
 	      // size and placement info.  That info still needs to be
 	      // converted to SVG graphical elements however.
 	      d3.treemap().size([width, height]).padding(2)(root)	      
-
-	      console.log(this_svg.selectAll("rect"))
 
 	      // This process is tricky.  There is no 'rect' initially
 	      // in 'this_svg'.  As the loop passes through
@@ -78,8 +86,6 @@
 		.style("stroke", "black")
 		.style("fill", "slateblue")
 	      
-	      console.log(this_svg.selectAll("rect"))
-
 	      // Repeat the same trick, creating text elements for all
 	      // the labels.  The +5 and +20 are to adjust the position
 	      // of the text to the right and downward so that it doesn't
@@ -113,13 +119,12 @@
       <tr><td>I remove the spinner class but never add it?</td></tr>
     </table>
     <form id="d3_form">
-      <label for="form_textfield">Stuff to pass to D3 Treemap: </label>
-      <textarea id="form_textarea" name="form_textarea" rows=4 columns=50>
-      </textarea>
-      <label>
-	Hierarchy
-	<input id="inHierarchy" value="Dpto" class="form-control"/>
-      </label>
+      <label for="form_select">Data source: </label>
+      <select name="form_select" id="form_select">
+	{% for src in data_sources %}
+	<option value="{{src}}">{{src}}</option>
+	{% endfor %}
+      </select>
       <input type="submit">
     </form>
     
