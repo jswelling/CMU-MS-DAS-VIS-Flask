@@ -170,7 +170,7 @@ D3_DATA_SOURCES = {
 
     
 @bp.route('/d3_demo')
-def d3_demo():
+def d3():
     db = get_db()
     possible_data_sources = [key for key in D3_DATA_SOURCES]
     return render_template('main/d3_demo.html',
