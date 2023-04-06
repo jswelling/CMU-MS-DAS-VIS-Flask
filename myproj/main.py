@@ -89,11 +89,24 @@ def graphviz_form_submit():
     if data['out_format'] == 'nolayout':
         # Special case- avoid layout step
         cmd_l = ['neato', '-n2', '-Tsvg']
+        rslt = subprocess.run(cmd_l,
+                              input=data['textarea'].encode(),
+                              capture_output=True)
+    elif data['out_format'] == 'readfromfile':
+        cmd_l = [data['selector'], "-Tsvg"]
+        #fname = data['textarea'].encode()
+        fname = data['textarea'].strip()
+        print(f'FNAME <{fname}>')
+        with open(fname) as f:
+            input = f.read()
+        rslt = subprocess.run(cmd_l,
+                              input=input.encode(),
+                              capture_output=True)
     else:
         cmd_l = [data['selector'], f"-T{data['out_format']}"]
-    rslt = subprocess.run(cmd_l,
-                          input=data['textarea'].encode(),
-                          capture_output=True)
+        rslt = subprocess.run(cmd_l,
+                              input=data['textarea'].encode(),
+                              capture_output=True)
     pprint(rslt)
     if rslt.returncode:
         return {
